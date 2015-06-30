@@ -19,6 +19,7 @@ func resourceDNS() *schema.Resource {
 			"host": &schema.Schema{
 				Type:     schema.TypeString,
 				Required: true,
+				ForceNew: true,
 			},
 
 			"ip_address": &schema.Schema{
@@ -35,13 +36,7 @@ func resourceDNS() *schema.Resource {
 }
 
 func resourceDNSCreate(d *schema.ResourceData, m interface{}) error {
-	err := resourceDNSRead(d, m)
-	if err != nil {
-		return err
-	}
-
-	d.SetId(d.Get("host").(string))
-	return nil
+	return resourceDNSRead(d, m)
 }
 
 func resourceDNSRead(d *schema.ResourceData, m interface{}) error {
@@ -56,6 +51,7 @@ func resourceDNSRead(d *schema.ResourceData, m interface{}) error {
 
 	d.Set("ip_address", ips[0])
 	d.Set("ip_address_csv", strings.Join(ips, ","))
+	d.SetId(d.Get("host").(string))
 
 	return nil
 }
